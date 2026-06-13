@@ -1,0 +1,6 @@
+name: SkyColors
+version: 1.0.0
+main: dev.skycolors.SkyColorsPlugin
+api-version: '1.21'
+description: Registers custom biomes with colored skies via NMS
+authors: [L1nar]
