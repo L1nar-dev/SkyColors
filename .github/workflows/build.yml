@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         run: |
-          gradle wrapper --gradle-version 8.12
+          gradle wrapper --gradle-version 8.14
           ./gradlew jar
 
       - name: Upload JAR
