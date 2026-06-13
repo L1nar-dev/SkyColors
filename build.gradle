@@ -7,8 +7,9 @@ group = 'dev.skycolors'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    toolchains {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
