@@ -39,13 +39,13 @@ public class SkyColorsPlugin extends JavaPlugin {
     private void registerBiomes() throws Exception {
         var nmsServer = ((CraftServer) getServer()).getServer();
         var registryAccess = nmsServer.registryAccess();
-        var biomeRegistry = (MappedRegistry<Biome>) registryAccess.lookupOrThrow(Registries.BIOME);
+        var biomeRegistry = (MappedRegistry<Biome>) registryAccess.registryOrThrow(Registries.BIOME);
 
         unfreeze(biomeRegistry);
 
         var plainsKey = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("plains"));
-        var plains = registryAccess.lookupOrThrow(Registries.BIOME).lookupOrThrow(plainsKey).value();
-
+        var plains = biomeRegistry.get(plainsKey);
+        if (plains == null) throw new IllegalStateException("Plains biome not found!");
         for (var entry : BIOMES.entrySet()) {
             String name = entry.getKey();
             int skyColor = entry.getValue()[0];
