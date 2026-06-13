@@ -28,29 +28,56 @@ public class SkyColorsPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        getLogger().info("onLoad called, registering biomes...");
         try {
             registerBiomes();
-            getLogger().info("Registered " + BIOMES.size() + " custom sky biomes!");
+            getLogger().info("Successfully registered " + BIOMES.size() + " custom sky biomes!");
         } catch (Exception e) {
             getLogger().severe("Failed to register biomes: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void onEnable() {
+        getLogger().info("onEnable called. Biomes should already be registered.");
+        // Проверяем что биомы есть в реестре
+        try {
+            var nmsServer = ((CraftServer) getServer()).getServer();
+            RegistryAccess registryAccess = (RegistryAccess) nmsServer.registryAccess();
+            var biomeRegistry = (MappedRegistry<Biome>) registryAccess.registries()
+                    .filter(e -> e.key().equals(Registries.BIOME))
+                    .findFirst()
+                    .orElseThrow()
+                    .value();
+
+            for (String name : BIOMES.keySet()) {
+                var key = ResourceKey.create(Registries.BIOME,
+                        ResourceLocation.fromNamespaceAndPath("sky_colors", name));
+                var biome = biomeRegistry.get(key);
+                getLogger().info("Check sky_colors:" + name + " -> " + (biome != null ? "FOUND" : "MISSING"));
+            }
+        } catch (Exception e) {
+            getLogger().severe("Check failed: " + e.getMessage());
+        }
+    }
+
     private void registerBiomes() throws Exception {
         var nmsServer = ((CraftServer) getServer()).getServer();
+        getLogger().info("Got NMS server: " + nmsServer);
         RegistryAccess registryAccess = (RegistryAccess) nmsServer.registryAccess();
+        getLogger().info("Got registry access: " + registryAccess);
         var biomeRegistry = (MappedRegistry<Biome>) registryAccess.registries()
-    .filter(e -> e.key().equals(Registries.BIOME))
-    .findFirst()
-    .orElseThrow()
-    .value();
+                .filter(e -> e.key().equals(Registries.BIOME))
+                .findFirst()
+                .orElseThrow()
+                .value();
+        getLogger().info("Got biome registry: " + biomeRegistry);
 
         unfreeze(biomeRegistry);
 
         var plainsKey = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("plains"));
         var plains = biomeRegistry.get(plainsKey).orElseThrow().value();
-        if (plains == null) throw new IllegalStateException("Plains biome not found!");
 
         int waterColor = plains.getSpecialEffects().getWaterColor();
         int waterFogColor = plains.getSpecialEffects().getWaterFogColor();
@@ -104,4 +131,4 @@ public class SkyColorsPlugin extends JavaPlugin {
             frozenField.set(mapped, true);
         }
     }
-}
+            }
