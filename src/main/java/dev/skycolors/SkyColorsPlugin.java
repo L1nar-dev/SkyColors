@@ -2,6 +2,7 @@ package dev.skycolors;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +39,7 @@ public class SkyColorsPlugin extends JavaPlugin {
 
     private void registerBiomes() throws Exception {
         var nmsServer = ((CraftServer) getServer()).getServer();
-        var registryAccess = nmsServer.registryAccess();
+        RegistryAccess registryAccess = nmsServer.registryAccess();
         var biomeRegistry = (MappedRegistry<Biome>) registryAccess.registryOrThrow(Registries.BIOME);
 
         unfreeze(biomeRegistry);
@@ -46,6 +47,10 @@ public class SkyColorsPlugin extends JavaPlugin {
         var plainsKey = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("plains"));
         var plains = biomeRegistry.get(plainsKey);
         if (plains == null) throw new IllegalStateException("Plains biome not found!");
+
+        int waterColor = plains.getSpecialEffects().getWaterColor();
+        int waterFogColor = plains.getSpecialEffects().getWaterFogColor();
+
         for (var entry : BIOMES.entrySet()) {
             String name = entry.getKey();
             int skyColor = entry.getValue()[0];
@@ -54,8 +59,8 @@ public class SkyColorsPlugin extends JavaPlugin {
             var effects = new BiomeSpecialEffects.Builder()
                     .skyColor(skyColor)
                     .fogColor(fogColor)
-                    .waterColor(plains.getSpecialEffects().getWaterColor())
-                    .waterFogColor(plains.getSpecialEffects().getWaterFogColor())
+                    .waterColor(waterColor)
+                    .waterFogColor(waterFogColor)
                     .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
                     .build();
 
