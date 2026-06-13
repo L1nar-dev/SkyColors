@@ -37,15 +37,14 @@ public class SkyColorsPlugin extends JavaPlugin {
     }
 
     private void registerBiomes() throws Exception {
-        var registryAccess = nmsServer.registryAccess();
+        var nmsServer = ((CraftServer) getServer()).getServer();
         var registryAccess = nmsServer.registryAccess();
         var biomeRegistry = (MappedRegistry<Biome>) registryAccess.lookupOrThrow(Registries.BIOME);
 
         unfreeze(biomeRegistry);
 
         var plainsKey = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("plains"));
-        var plains = biomeRegistry.get(plainsKey);
-        if (plains == null) throw new IllegalStateException("Plains biome not found!");
+        var plains = biomeRegistry.lookupOrThrow(plainsKey).value();
 
         for (var entry : BIOMES.entrySet()) {
             String name = entry.getKey();
@@ -96,4 +95,4 @@ public class SkyColorsPlugin extends JavaPlugin {
             frozenField.set(mapped, true);
         }
     }
-              }
+}
