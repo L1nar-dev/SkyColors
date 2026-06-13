@@ -37,9 +37,9 @@ public class SkyColorsPlugin extends JavaPlugin {
     }
 
     private void registerBiomes() throws Exception {
-        var nmsServer = ((CraftServer) getServer()).getServer();
         var registryAccess = nmsServer.registryAccess();
-        var biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+        var registryAccess = nmsServer.registryAccess();
+        var biomeRegistry = (MappedRegistry<Biome>) registryAccess.lookupOrThrow(Registries.BIOME);
 
         unfreeze(biomeRegistry);
 
