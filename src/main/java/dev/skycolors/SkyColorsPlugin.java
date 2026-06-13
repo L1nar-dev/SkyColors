@@ -44,7 +44,7 @@ public class SkyColorsPlugin extends JavaPlugin {
         unfreeze(biomeRegistry);
 
         var plainsKey = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("plains"));
-        var plains = biomeRegistry.lookupOrThrow(plainsKey).value();
+        var plains = registryAccess.lookupOrThrow(Registries.BIOME).lookupOrThrow(plainsKey).value();
 
         for (var entry : BIOMES.entrySet()) {
             String name = entry.getKey();
